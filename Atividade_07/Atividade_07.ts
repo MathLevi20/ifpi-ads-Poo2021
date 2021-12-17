@@ -65,26 +65,27 @@ console.log(Hr.met_minutos());
 console.log(Hr.met_segundos());
 console.log(Hr.met_horas());
 
-/*3. Altere as implementações da classe Banco das aulas anteriores para que:
-a. O array de contas seja privado;
-b. O método consulta por índice seja privado;
+/*3. Altere as implementações da classe Banco das aulas anteriores para que: 
+a. O array de contas seja privado; 
+b. O método consulta por índice seja privado; 
 c. Os demais métodos sejam públicos.*/
 
 class Banco {
 	private contas: Conta[] = [];
-	
-	public inserir(conta: Conta): void {
-        let contaConsultada = this.consultar(conta.numero);
 
-        if (contaConsultada == null) {
-		    this.contas.push(conta);
+	inserir(conta: Conta): void {
+        if(!this.consultar(conta.obter_Numero())){
+          this.contas.push(conta);
+          console.log(`Conta Valida`);
+        }else{
+          console.log(`Tente Novamente`)
         }
-	}
+        }
 	
-	public get consultar(numero: String): Conta {
+	public consultar(numero: string): Conta {
 		let contaConsultada: Conta;
 		for (let conta of this.contas) {
-			if (conta.numero == numero) {
+			if (conta.obter_Numero() == numero) {
 				contaConsultada = conta;
 				break;
 			}
@@ -95,7 +96,7 @@ class Banco {
 	private consultarPorIndice(numero: String): number {
 		let indice: number = -1;
 		for (let i: number = 0; i < this.contas.length; i++) {
-			if (this.contas[i].numero == numero) {
+			if (this.contas[i].obter_Numero() == numero) {
 				indice = i;
 				break;
 			}
@@ -104,7 +105,7 @@ class Banco {
 	}
 
 	public alterar(conta: Conta): void {
-		let indice: number = this.consultarPorIndice(conta.numero);
+		let indice: number = this.consultarPorIndice(conta.obter_Numero());
 		if (indice != -1) {
 			this.contas[indice] = conta;
 		}
@@ -122,7 +123,7 @@ class Banco {
 		} 
 	}
 
-	public depositar(numero: String, valor: number): void {
+	public depositar(numero: string, valor: number): void {
 		let contaConsultada = this.consultar(numero);
 
 		if (contaConsultada != null) {
@@ -130,7 +131,7 @@ class Banco {
 		}
 	}
 
-    public sacar(numero: String, valor: number): void {
+    public sacar(numero: string, valor: number): void {
         let contaConsultada = this.consultar(numero);
 
         if (contaConsultada != null) {
@@ -153,13 +154,11 @@ class Banco {
 
     public calcularTotalSaldos(): number {
         let totalSaldo: number = 0;
-        for (conta of this.contas) {
-            totalSaldo += conta.saldo;
+        for (var conta of this.contas) {
+            totalSaldo += conta.obter_Saldo();
         }
-
         return totalSaldo;
     }
-
     public calcularMediaSaldos() {
         return this.calcularTotalSaldos()/this.calcularQuantidadeContas();
     }
@@ -175,25 +174,39 @@ adaptados para ter métodos de leitura e escrita, visto que os atributos que
 agora são privados.*/
 
 class Conta {
-	private numero: String;
+	private numero: string;
 	private saldo: number;
 
-    constructor(numero: String, saldoInicial: number) {
+    constructor(numero: string, saldoInicial: number) {
 		this.numero = numero;
 		this.saldo = saldoInicial;
 	}
 
-	get sacar(valor: number): void {
+    get Saldo():number{
+		return this.saldo
+	}
+	get Numero():string{
+		return this.numero
+	}
+
+    public obter_Saldo():number{
+		return this.saldo
+	}
+	public obter_Numero():string{
+		return this.numero
+	}
+
+	public sacar(valor: number): void {
 		if (this.saldo >= valor) {
 			this.saldo = this.saldo - valor;
 		}
 	}
 
-	get depositar(valor: number): void {
+	public depositar(valor: number): void {
 		this.saldo = this.saldo + valor;
 	}
 
-	get transferir(contaDestino: Conta, valor: number): void {
+	public transferir(contaDestino: Conta, valor: number): void {
 		this.sacar(valor);
 		contaDestino.depositar(valor);
 	}
@@ -202,18 +215,20 @@ class Conta {
 
 
 
-let conta : Conta = new Conta("1", 100)
-let b: Banco = new Banco();
-b.inserir(conta);
-b.inserir(new Conta("1", 20));
-//b.sacar("1",20);
-console.log(conta.saldo);
 
-b.inserir(new Conta("2", 200));
+let account: Conta = new Conta("1", 100)
+let bank: Banco = new Banco();
+bank.inserir(new Conta("1", 20));
+bank.sacar("1",20);
+bank.inserir(new Conta("2", 200));
+console.log(account.Numero)
+console.log(account.Saldo)
+console.log(account.Saldo)
 
-b.transferir("1","2", 10);
-console.log(b.consultar("1").saldo);
-console.log(b.consultar("2").saldo);
-console.log(b.calcularQuantidadeContas());
-console.log(b.calcularTotalSaldos());
-console.log(b.calcularMediaSaldos());
+
+
+
+
+
+
+
